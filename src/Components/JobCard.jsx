@@ -68,9 +68,9 @@ export const JobCard = ({Fun,Data}) => {
     
 
 </Box>
-<Box sx={{position:"absolute",bottom:10,left:"38%"}}>
+{/* <Box sx={{position:"absolute",bottom:10,left:"38%"}}>
       <Button variant='contained' size='large' onClick={()=>Fun()} expand sx={{backgroundColor:"black"}}>View</Button>
-    </Box>
+    </Box> */}
     </Box>
    
   )

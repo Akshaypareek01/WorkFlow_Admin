@@ -39,9 +39,9 @@ export const InfoCard = ({Data}) => {
       </Box>
     </Box>
 
-    <Box sx={{display:"flex",justifyContent:"center",alignItems:"center",marginTop:"35px"}}>
+    {/* <Box sx={{display:"flex",justifyContent:"center",alignItems:"center",marginTop:"35px"}}>
       <Button variant='contained' size='large' expand sx={{backgroundColor:"black"}} onClick={()=>handelView(Data._id)}>View Details</Button>
-    </Box>
+    </Box> */}
 
 </Box>
   )
