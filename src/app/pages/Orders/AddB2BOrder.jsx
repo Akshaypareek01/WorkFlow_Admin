@@ -11,6 +11,10 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import Checkbox from '@mui/material/Checkbox';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import ListItemText from '@mui/material/ListItemText';
+import { DatePicker, LocalizationProvider,TimePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
+import "./AddJobs.css"
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -35,7 +39,7 @@ const names = [
   'Kelly Snyder',
 ];
 export const AddB2BOrder = () => {
-  const [formData, setFormData] = useState({
+  const initalData = {
     assignedWorker: '',
     assignedSparePartWorker:'',
     jobName:"",
@@ -47,9 +51,14 @@ export const AddB2BOrder = () => {
     address:"",
     pincode:"",
     city:"",
-    country:""
+    country:"",
+    jobDate:"",
+    startTime:"",
+    stopTime:"",
+    travelTime:""
     
-  });
+  }
+  const [formData, setFormData] = useState(initalData);
 
   const [b2bVendors, setB2BVendors] = useState([]);
   const [CollectorsData,setCollectorsData] = useState([]);
@@ -149,24 +158,16 @@ console.log("All Parts DAta ====>",matchingIds)
       assignedSparePartWorker:formData.assignedSparePartWorker,
       jobName:formData.jobName,
       description:formData.description,
-      user:userDetails
+      jobDate:formData.jobDate,
+      startTime:formData.startTime,
+      stopTime:formData.stopTime,
+      user:userDetails,
+      travelTime:formData.travelTime
     }
 
     console.log("Data ==>",formData)
     createJob(Data);
-    setFormData({
-      assignedWorker: '',
-    jobName:"",
-    description:"",
-    partsRequired:[],
-    name:"",
-    email:"",
-    mobileNumber:"",
-    address:"",
-    pincode:"",
-    city:"",
-    country:""
-    })
+    setFormData(initalData)
     setPartsData([])
     handelBack();
   };
@@ -223,6 +224,28 @@ console.log("All Parts DAta ====>",matchingIds)
     }
   };
 
+  const handleDateChange = (date) => {
+    setFormData({
+      ...formData,
+      jobDate: date
+    });
+  };
+
+  const handleStartTimeChange = (time) => {
+    setFormData({
+      ...formData,
+      startTime: time
+    });
+  };
+
+  const handleStopTimeChange = (time) => {
+    setFormData({
+      ...formData,
+      stopTime: time
+    });
+  };
+
+
   useEffect(()=>{
     fetchTeamMember()
     getAllParts()
@@ -250,6 +273,79 @@ console.log("All Parts DAta ====>",matchingIds)
           </Box>
              
           <Grid container spacing={2} sx={{marginTop:"20px"}}>
+
+          <Grid item xs={12} sm={3}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Job Date"
+            value={formData.jobDate}
+            onChange={handleDateChange}
+          />
+        </LocalizationProvider>
+      </Grid>
+
+      <Grid item xs={12} sm={3}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <TimePicker
+            label="Start Time"
+            value={formData.startTime}
+            onChange={handleStartTimeChange}
+          />
+        </LocalizationProvider>
+      </Grid>
+
+      <Grid item xs={12} sm={3}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <TimePicker
+            label="Stop Time"
+            value={formData.stopTime}
+            onChange={handleStopTimeChange}
+          />
+        </LocalizationProvider>
+      </Grid>
+      <Grid item xs={12} sm={3}>
+        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <TimePicker
+            label="Travel Time"
+            value={formData.travelTime}
+            onChange={handleTravelTimeChange}
+            ampm={false}
+          views={['minutes']}
+          />
+        </LocalizationProvider> */}
+        <TextField
+        label="Travel Time In Min"
+        variant="outlined"
+        name='travelTime'
+        value={formData.travelTime}
+        onChange={handleInputChange}
+        inputProps={{
+          inputMode: 'numeric',
+          pattern: '[0-9]*',
+          maxLength: 2,
+        }}
+      />
+      </Grid>
+
+          <Grid item xs={12} sm={6}>
+        <TextField
+          fullWidth
+          label="Job Name"
+          name="jobName"
+          value={formData.jobName}
+          onChange={handleInputChange}
+        />
+      </Grid>
+     
+      <Grid item xs={12} sm={6}>
+        <TextField
+          fullWidth
+          label="Job Description"
+          name="description"
+          value={formData.description}
+          onChange={handleInputChange}
+        />
+      </Grid>
       <Grid item xs={12} sm={6}>
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Assigne Worker</InputLabel>
@@ -288,25 +384,7 @@ console.log("All Parts DAta ====>",matchingIds)
         </FormControl>
       </Grid>
      
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Job Name"
-          name="jobName"
-          value={formData.jobName}
-          onChange={handleInputChange}
-        />
-      </Grid>
      
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Job Description"
-          name="description"
-          value={formData.description}
-          onChange={handleInputChange}
-        />
-      </Grid>
 
       {/* <Grid item xs={12} sm={6}>
       
@@ -378,7 +456,7 @@ console.log("All Parts DAta ====>",matchingIds)
         />
       </Grid>
 
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={4}>
         <TextField
           fullWidth
           label="Pin Code"
@@ -388,7 +466,7 @@ console.log("All Parts DAta ====>",matchingIds)
         />
       </Grid>
 
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={4}>
         <TextField
           fullWidth
           label="City"
@@ -398,7 +476,7 @@ console.log("All Parts DAta ====>",matchingIds)
         />
       </Grid>
 
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={4}>
         <TextField
           fullWidth
           label="Country"

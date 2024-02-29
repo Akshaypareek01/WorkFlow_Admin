@@ -3,6 +3,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import { Box, Button, Typography } from '@mui/material';
+import AccessTime from '@mui/icons-material/AccessTime';
+import { UpdateDisabled } from '@mui/icons-material';
 
 export const JobCard = ({Fun,Data}) => {
   return (
@@ -60,6 +62,41 @@ export const JobCard = ({Fun,Data}) => {
       </Box>
       <Box sx={{marginLeft:"10px"}}>
         <Typography sx={{fontSize:"14px"}}>{Data && Data.user.address},{Data && Data.user.pincode},{Data && Data.user.city},{Data && Data.user.country}</Typography>
+      </Box>
+    </Box>
+
+    <Box sx={{display:"flex",justifyContent:"left",marginTop:"15px"}}>
+      <Box>
+        <FmdGoodIcon sx={{fontSize:"30px"}}/>
+      </Box>
+      <Box sx={{marginLeft:"10px"}}>
+        <Typography sx={{fontSize:"14px"}}>
+        {Data && Data.jobDate && new Date(Data.jobDate).toLocaleDateString()},
+        </Typography>
+      </Box>
+    </Box>
+
+    <Box sx={{display:"flex",justifyContent:"left",marginTop:"15px"}}>
+      <Box>
+        <AccessTime sx={{fontSize:"30px"}}/>
+      </Box>
+      <Box sx={{marginLeft:"10px"}}>
+        <Typography sx={{fontSize:"14px"}}>
+        
+        {Data && Data.startTime && new Date(Data.startTime).toLocaleTimeString()},
+          
+        </Typography>
+      </Box>
+    </Box>
+
+    <Box sx={{display:"flex",justifyContent:"left",marginTop:"15px"}}>
+      <Box>
+        <UpdateDisabled sx={{fontSize:"30px"}}/>
+      </Box>
+      <Box sx={{marginLeft:"10px"}}>
+        <Typography sx={{fontSize:"14px"}}>
+           {Data && Data.stopTime && new Date(Data.stopTime).toLocaleTimeString()}
+        </Typography>
       </Box>
     </Box>
 
