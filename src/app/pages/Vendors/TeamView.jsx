@@ -36,7 +36,7 @@ const style = {
     boxShadow: 24,
     p: 2,
   };
-export const VendorsView = () => {
+export const TeamView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);

@@ -23,7 +23,7 @@ import {
   import axios from "axios";
   import Grid from "@mui/material/Grid";
   // import CountryList from 'react-select-country-list';
-  export const AddVendors = () => {
+  export const AddTeam = () => {
     const navigate = useNavigate();
     const [Formdata, setFormData] = useState({
       name: "",

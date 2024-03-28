@@ -53,7 +53,7 @@ function a11yProps(index) {
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
-export const Vendors = () => {
+export const Team = () => {
  const navigate = useNavigate()
   const [value, setValue] = React.useState(0);
   const [searchInput, setSearchInput] = React.useState('');

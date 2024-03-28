@@ -8,21 +8,21 @@ import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils'
 
 import UserContext from '../../Context/UserContext'
 
-import { B2BUsers } from '../pages/ManageB2BUsers/B2BUsers'
+import {  Client } from '../pages/ManageB2BUsers/Client'
 
-import { B2BUserAdd } from '../pages/ManageB2BUsers/B2BUserAdd'
-import { Vendors } from '../pages/Vendors/Vendors'
+import {  ClientAdd } from '../pages/ManageB2BUsers/ClientAdd'
+import { Team } from '../pages/Vendors/Team'
 import { Rates } from '../pages/Rates/Rates'
 import { Orders } from '../pages/Orders/Orders'
-import { Categories } from '../pages/Categories/Categories'
+import {  Inventory } from '../pages/Categories/Inventory'
 import { Sales } from '../pages/Sales/Sales'
 import { Plans } from '../pages/Plans/Plans'
 import { Accounts } from '../pages/Accounts/Accounts'
 import { Users } from '../pages/Users/Users'
-import { ViewCategories } from '../pages/Categories/ViewCategories'
+import {  ViewInventory } from '../pages/Categories/ViewInventory'
 
-import { AddVendors } from '../pages/Vendors/AddVendors'
-import { VendorsView } from '../pages/Vendors/VendorsView'
+import { AddTeam } from '../pages/Vendors/AddTeam'
+import { TeamView } from '../pages/Vendors/TeamView'
 import { B2BOrders } from '../pages/Orders/B2BOrders'
 import { AddB2BOrder } from '../pages/Orders/AddB2BOrder'
 import { AddUsers } from '../pages/Users/AddUsers'
@@ -52,39 +52,39 @@ const PrivateRoutes = () => {
      
        
         <Route
-          path='vendors/*'
+          path='team/*'
           element={
             <SuspensedView>
-              <Vendors />
+              <Team />
             </SuspensedView>
           }
         />
 
 <Route
-          path='vendors/add/*'
+          path='team/add/*'
           element={
             <SuspensedView>
-              <AddVendors />
+              <AddTeam />
             </SuspensedView>
           }
         />
         <Route
-          path='vendors/view/:id'
+          path='team/view/:id'
           element={
             <SuspensedView>
-              <VendorsView />
+              <TeamView />
             </SuspensedView>
           }
         />
 
-<Route
+{/* <Route
           path='rates/*'
           element={
             <SuspensedView>
               <Rates />
             </SuspensedView>
           }
-        />
+        /> */}
 
 <Route
           path='orders/*'
@@ -103,7 +103,7 @@ const PrivateRoutes = () => {
           }
         />
         <Route
-          path='b2b_orders/*'
+          path='jobs/*'
           element={
             <SuspensedView>
               <B2BOrders />
@@ -111,7 +111,7 @@ const PrivateRoutes = () => {
           }
         />
         <Route
-          path='b2b_orders/add/*'
+          path='jobs/add/*'
           element={
             <SuspensedView>
               <AddB2BOrder />
@@ -120,31 +120,31 @@ const PrivateRoutes = () => {
         />
 
 <Route
-          path='categories/*'
+          path='inventory/*'
           element={
             <SuspensedView>
-              <Categories />
+              <Inventory />
             </SuspensedView>
           }
         />
 
 <Route
-          path='categories/view-categorie/:id'
+          path='inventory/view-categorie/:id'
           element={
             <SuspensedView>
-              <ViewCategories />
+              <ViewInventory />
             </SuspensedView>
           }
         />
 
-<Route
+{/* <Route
           path='sales/*'
           element={
             <SuspensedView>
               <Sales />
             </SuspensedView>
           }
-        />
+        /> */}
         <Route
           path='accounts/create-invoice/*'
           element={
@@ -153,7 +153,7 @@ const PrivateRoutes = () => {
             </SuspensedView>
           }
         />
-
+{/* 
 <Route
           path='plans/*'
           element={
@@ -161,7 +161,7 @@ const PrivateRoutes = () => {
               <Plans />
             </SuspensedView>
           }
-        />
+        /> */}
 
 <Route
           path='accounts/*'
@@ -172,7 +172,7 @@ const PrivateRoutes = () => {
           }
         />
 
-<Route
+{/* <Route
           path='users/*'
           element={
             <SuspensedView>
@@ -188,22 +188,22 @@ const PrivateRoutes = () => {
               <AddUsers />
             </SuspensedView>
           }
-        />
+        /> */}
   
 
 <Route
-          path='b2b_users/*'
+          path='client/*'
           element={
             <SuspensedView>
-              <B2BUsers />
+              <Client />
             </SuspensedView>
           }
         />
         <Route
-          path='b2b_users_add/*'
+          path='client_add/*'
           element={
             <SuspensedView>
-              <B2BUserAdd />
+              <ClientAdd />
             </SuspensedView>
           }
         />

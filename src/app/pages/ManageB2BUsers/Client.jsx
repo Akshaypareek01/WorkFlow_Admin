@@ -22,7 +22,7 @@ const column = [
   { name: "Action" },
   { name: "Delete" },
 ];
-export const B2BUsers = () => {
+export const Client = () => {
     const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [rows,setrows] = useState([])
@@ -32,7 +32,7 @@ export const B2BUsers = () => {
   }
 
   const handelAddUser=()=>{
-    navigate("/b2b_users_add/")
+    navigate("/client_add/")
   }
  
   const fetchUser = async () => {

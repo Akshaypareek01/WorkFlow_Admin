@@ -8,7 +8,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import WorkIcon from '@mui/icons-material/Work';
 const SidebarMenuMain = () => {
   // const {userPermisson}=useContext(UserContext);
   const userPermisson = JSON.parse(sessionStorage.getItem("userPermisson"));
@@ -24,16 +24,25 @@ const SidebarMenuMain = () => {
       />
 
       <SidebarMenuItem
-        to="/vendors"
+        to="/team"
         icon={<PeopleIcon style={{ color: "orange", fontSize: "25px" }} />}
         title="Team"
+        fontIcon="bi-layers"
+      />
+
+<SidebarMenuItem
+        to="/client"
+        icon={
+          <WorkIcon style={{ color: "orange", fontSize: "25px" }} />
+        }
+        title="Client"
         fontIcon="bi-layers"
       />
 
    
 
 <SidebarMenuItem
-        to="/b2b_orders"
+        to="/jobs"
         icon={
           <ShoppingCartIcon style={{ color: "orange", fontSize: "25px" }} />
         }
@@ -42,7 +51,7 @@ const SidebarMenuMain = () => {
       />
 
       <SidebarMenuItem
-        to="/categories"
+        to="/inventory"
         icon={<CategoryIcon style={{ color: "orange", fontSize: "25px" }} />}
         title="Inventory"
         fontIcon="bi-layers"
@@ -59,6 +68,8 @@ const SidebarMenuMain = () => {
         title="Accounts"
         fontIcon="bi-layers"
       />
+
+
 
      
     </>
