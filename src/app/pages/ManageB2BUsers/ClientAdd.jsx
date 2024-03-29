@@ -37,6 +37,9 @@ import { ThemeProvider } from "@mui/material/styles";
 import { Base_url } from "../../Config/BaseUrl";
 import { ThemColor } from "../../Them/ThemColor";
 import CircularProgress from "@mui/material/CircularProgress";
+import DropzoneComponent from "../../../Components/DropZoneComponent";
+import AddressAutoComplete from "../../../Components/AddressAutoComplete";
+import CountryRegionSelector from "../../../Components/CountryDropDown";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const orangeTheme = createTheme({
@@ -91,8 +94,8 @@ export const ClientAdd = () => {
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
     );
-  
-  const [type,setType] = useState('');
+
+  const [type, setType] = useState('');
   const [Teacherloading, setTeacherLoading] = useState(false);
   const [personName, setPersonName] = React.useState([]);
   const [visibleSection, setVisibleSection] = useState(1);
@@ -117,31 +120,30 @@ export const ClientAdd = () => {
   const [setCounterAc, setSetCounterAc] = useState(1);
 
   const [formDataTrainer, setFormDatasetFormData] = useState({
-    type:"",
-    business_Name:"",
-    business_Website:"",
-    business_Email:"",
-    business_Phone:"",
+    type: "",
+    business_Name: "",
+    business_Website: "",
+    business_Email: "",
+    business_Phone: "",
     // alternative_contacts:"",
     name: "",
     mobile: "",
     email: "",
+    dob: null,
+
     alter_name: "",
     alter_mobile: "",
     alter_email: "",
-    description: "",
-    pincode: "",
-    address:"",
-    address_type:"",
-    city: "",
-    country: "",
     alter_dob: null,
-    dob: null,
-    Expertise: [],
+
+   
+    pincode: "",
+    address: "",
+    address_type: "",
+    city: "",
+
     Address: "",
-    password: "",
-    gender: "",
-    teachingExperience: "",
+    description: "",
   });
 
   const [userimageFile2, setUserImageFile2] = useState(null);
@@ -154,27 +156,7 @@ export const ClientAdd = () => {
   const [address, setAddress] = useState('');
   const [addressOptions, setAddressOptions] = useState([]);
 
-  const handleCountryChange = (event) => {
-    setCountry(event.target.value);
-  };
-
-  const handleAddressChange = (event) => {
-    setAddress(event.target.value);
-    // Fetch address suggestions from Google Places API
-    fetchAddressOptions(event.target.value);
-  };
-
-  const fetchAddressOptions = async (input) => {
-    try {
-      const response = await axios.get(
-        `'https://maps.googleapis.com/maps/api/place/js/AutocompletionService.GetPredictions?1s230&4sen&6m6&1m2&1d-36.870725&2d174.762049&2m2&1d-36.818164&2d174.806428&7scountry%3AIN&9sgeocode&15e3&20sA18CE73B-6EA5-49B7-94EE-D2D3BB074997nw93h7vwmsq3&21m1&2e1&r_url=https%3A%2F%2Fportal.fleetonstreet.com%2F&callback=_xdc_._sw0icp&key=AIzaSyCkSBqu_YqiZQadDJaWsmddKM6dZ-P6BB8&token=125125`
-      );
-      setAddressOptions(response.data.predictions);
-    } catch (error) {
-      console.error('Error fetching address options:', error);
-    }
-  };
-
+ 
   const handleAddressSelect = (selectedAddress) => {
     setAddress(selectedAddress);
     // You can further process or store the selected address here
@@ -303,61 +285,60 @@ export const ClientAdd = () => {
   };
 
   const handelTrainerContinue = () => {
-    if (!isTCChecked) {
-      alert("Please accepts Terms & Conditions and Privacy Policy");
-      return;
-    }
+    // if (!isTCChecked) {
+    //   alert("Please accepts Terms & Conditions and Privacy Policy");
+    //   return;
+    // }
 
-    for (const key in formDataTrainer) {
-      if (formDataTrainer[key] === "") {
-        alert(`${key} is required.`);
-        return; // Stop the submission process if any field is empty
-      }
-    }
+    // for (const key in formDataTrainer) {
+    //   if (formDataTrainer[key] === "") {
+    //     alert(`${key} is required.`);
+    //     return; // Stop the submission process if any field is empty
+    //   }
+    // }
 
-    console.log("Data of map inputs", inputFields);
+    console.log("Data of map inputs", formDataTrainer);
 
-    const formData = new FormData();
+    // const formData = new FormData();
 
-    formData.append("name", formDataTrainer.name);
-    formData.append("email", formDataTrainer.email);
-    formData.append("gender", formDataTrainer.gender);
-    formData.append("password", formDataTrainer.password);
-    formData.append("mobile", formDataTrainer.mobile);
-    formData.append("dob", formDataTrainer.dob);
-    formData.append("Address", formDataTrainer.Address);
-    formDataTrainer.Expertise.forEach((el, index) => {
-      formData.append("expertise", el);
-    });
+    // formData.append("name", formDataTrainer.name);
+    // formData.append("email", formDataTrainer.email);
+    // formData.append("gender", formDataTrainer.gender);
+    // formData.append("password", formDataTrainer.password);
+    // formData.append("mobile", formDataTrainer.mobile);
+    // formData.append("dob", formDataTrainer.dob);
+    // formData.append("Address", formDataTrainer.Address);
+    // formDataTrainer.Expertise.forEach((el, index) => {
+    //   formData.append("expertise", el);
+    // });
 
-    formData.append("city", formDataTrainer.city);
-    formData.append("pincode", formDataTrainer.pincode);
-    formData.append("country", formDataTrainer.country);
-    const qualificationData = JSON.stringify(inputFields);
-    const additional_courses = JSON.stringify(inputFieldsAc);
-    formData.append("qualification", qualificationData);
-    formData.append("additional_courses", additional_courses);
-    formData.append("teachingExperience", formDataTrainer.teachingExperience);
-    formData.append("description", formDataTrainer.description);
-    const ImageData = [TeacherimageFile1, TeacherimageFile2];
-    formData.append("images", TeacherimageFile1);
-    formData.append("images", TeacherimageFile2);
-    setTeacherLoading(true);
-    axios
-      .post(`${Base_url}teacher_signup`, formData)
-      .then((response) => {
-        setTeacherLoading(false);
-        console.log("Teacher created successfully:", response.data);
-        // Optionally, you can navigate to the login page or perform any other action
-        // navigation("/login");
-        alert("Trainer Account created successfully");
-        handelGoBack();
-      })
-      .catch((error) => {
-        console.error("Error creating user:", error);
-        setTeacherLoading(false);
-        alert("Refresh and try again");
-      });
+    // formData.append("city", formDataTrainer.city);
+    // formData.append("pincode", formDataTrainer.pincode);
+    // formData.append("country", formDataTrainer.country);
+    // const qualificationData = JSON.stringify(inputFields);
+    // const additional_courses = JSON.stringify(inputFieldsAc);
+    // formData.append("qualification", qualificationData);
+    // formData.append("additional_courses", additional_courses);
+    // formData.append("teachingExperience", formDataTrainer.teachingExperience);
+    // formData.append("description", formDataTrainer.description);
+    // const ImageData = [TeacherimageFile1, TeacherimageFile2];
+    // formData.append("images", TeacherimageFile1);
+    // formData.append("images", TeacherimageFile2);
+    // setTeacherLoading(true);
+    // axios
+    //   .post(`${Base_url}teacher_signup`, formData)
+    //   .then((response) => {
+    //     setTeacherLoading(false);
+    //     console.log("Teacher created successfully:", response.data);
+      
+    //     alert("Trainer Account created successfully");
+    //     handelGoBack();
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error creating user:", error);
+    //     setTeacherLoading(false);
+    //     alert("Refresh and try again");
+    //   });
   };
 
   const Expertise = [
@@ -409,6 +390,36 @@ export const ClientAdd = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+
+  useEffect(() => {
+    console.log("Address Data  ==>", address);
+    if(address !== ""){
+      // address.address_components.forEach(component => {
+      //   const inputField = document.getElementById(component.types[0]); // Assuming the first type is used as input ID
+      //   if (inputField) {
+      //       inputField.value = component.long_name;
+      //   }})
+      const relevantTypes = ["street_number", "route", "neighborhood","sublocality_level_1","sublocality_level_2",];
+      const relevantComponents = address.address_components.filter(component =>
+        component.types.some(type => relevantTypes.includes(type))
+      );
+      
+      // Construct the address string
+      const address1 = relevantComponents.map(component => component.long_name).join(", ");
+      // const address1 = address.address_components.map(component => component.long_name).join(", ");
+    
+      // Updating the form state with the fetched address
+      setFormDatasetFormData(prevState => ({
+        ...prevState,
+        Address: address.name + "," + address1,
+        pincode: address.address_components.find(component => component.types.includes('postal_code'))?.long_name || '',
+        city: address.address_components.find(component => component.types.includes('locality'))?.long_name || '',
+        country: address.address_components.find(component => component.types.includes('country'))?.long_name || ''
+      }));
+    }
+    
+  }, [address])
   return (
     <div style={{ display: "flex", backgroundColor: "#fff" }}>
       <div
@@ -473,7 +484,7 @@ export const ClientAdd = () => {
                       }}
                     />
                     <Tab
-                      label="Addresses"
+                      label="Address"
                       {...a11yProps(1)}
                       style={{
                         backgroundColor: `${value === 1 ? "#EE731B" : "#fff"}`,
@@ -498,82 +509,82 @@ export const ClientAdd = () => {
 
               <CustomTabPanel value={value} index={0}>
                 <Grid container spacing={2}>
-                <Grid item xs={12} sm={12} md={12}>
-                <div>
-                    <FormControl sx={{ width: "100%" }}>
-                      <InputLabel id="demo-multiple-checkbox-label">
-                      Client Type
-                      </InputLabel>
-                      <Select
-                        labelId="demo-multiple-checkbox-label"
-                        id="demo-multiple-checkbox"
-                        value={type}
-                        onChange={handleTypeChange}
-                        sx={{ overflowX: "hidden", width: "100%" }}
-                      >
-                       
-                       <MenuItem value={"Individual"}>Individual</MenuItem>
-                       <MenuItem value={"Business"}>Business</MenuItem>
-                      
-                     
-                      </Select>
-                    </FormControl>
-                  </div>
+                  <Grid item xs={12} sm={12} md={12}>
+                    <div>
+                      <FormControl sx={{ width: "100%" }}>
+                        <InputLabel id="demo-multiple-checkbox-label">
+                          Client Type
+                        </InputLabel>
+                        <Select
+                          labelId="demo-multiple-checkbox-label"
+                          id="demo-multiple-checkbox"
+                          value={type}
+                          onChange={handleTypeChange}
+                          sx={{ overflowX: "hidden", width: "100%" }}
+                        >
+
+                          <MenuItem value={"Individual"}>Individual</MenuItem>
+                          <MenuItem value={"Business"}>Business</MenuItem>
+
+
+                        </Select>
+                      </FormControl>
+                    </div>
                   </Grid>
                   {
-                       type === "Business"   &&     <>
-                       <Grid item xs={12} sm={6} md={6}>
-                    <TextField
-                      id="outlined-basic"
-                      label="Business Name"
-                      variant="outlined"
-                      style={{ width: "100%" }}
-                      name="business_Name"
-                      value={formDataTrainer.business_Name}
-                      onChange={handleChangeTrainer}
-                    />
-                  </Grid>
+                    type === "Business" && <>
+                      <Grid item xs={12} sm={6} md={6}>
+                        <TextField
+                          id="outlined-basic"
+                          label="Business Name"
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          name="business_Name"
+                          value={formDataTrainer.business_Name}
+                          onChange={handleChangeTrainer}
+                        />
+                      </Grid>
 
-                  <Grid item xs={12} sm={6} md={6}>
-                    <TextField
-                      id="outlined-basic"
-                      label="Business Website"
-                      variant="outlined"
-                      style={{ width: "100%" }}
-                      name="business_Website"
-                      value={formDataTrainer.business_Website}
-                      onChange={handleChangeTrainer}
-                    />
-                  </Grid>
+                      <Grid item xs={12} sm={6} md={6}>
+                        <TextField
+                          id="outlined-basic"
+                          label="Business Website"
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          name="business_Website"
+                          value={formDataTrainer.business_Website}
+                          onChange={handleChangeTrainer}
+                        />
+                      </Grid>
 
-                  <Grid item xs={12} sm={6} md={6}>
-                    <TextField
-                      id="outlined-basic"
-                      label="Business Email"
-                      variant="outlined"
-                      style={{ width: "100%" }}
-                      name="business_Email"
-                      value={formDataTrainer.business_Email}
-                      onChange={handleChangeTrainer}
-                    />
-                  </Grid>
+                      <Grid item xs={12} sm={6} md={6}>
+                        <TextField
+                          id="outlined-basic"
+                          label="Business Email"
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          name="business_Email"
+                          value={formDataTrainer.business_Email}
+                          onChange={handleChangeTrainer}
+                        />
+                      </Grid>
 
-                  <Grid item xs={12} sm={6} md={6}>
-                    <TextField
-                      id="outlined-basic"
-                      label="Business Phone"
-                      variant="outlined"
-                      style={{ width: "100%" }}
-                      name="business_Phone"
-                      value={formDataTrainer.business_Phone}
-                      onChange={handleChangeTrainer}
-                    />
-                  </Grid>
+                      <Grid item xs={12} sm={6} md={6}>
+                        <TextField
+                          id="outlined-basic"
+                          label="Business Phone"
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          name="business_Phone"
+                          value={formDataTrainer.business_Phone}
+                          onChange={handleChangeTrainer}
+                        />
+                      </Grid>
 
                     </>
                   }
-                
-                 
+
+
 
 
                   <Grid item xs={12} sm={6} md={6}>
@@ -588,7 +599,7 @@ export const ClientAdd = () => {
                     />
                   </Grid>
 
-                
+
                   <Grid item xs={12} sm={6} md={6}>
                     <div>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -627,14 +638,14 @@ export const ClientAdd = () => {
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={12}>
-                    <div style={{padding:"10px 0px 10px 0px"}}>
-                    <Typography variant="h5">Alternative Contacts ( optional )</Typography>
+                    <div style={{ padding: "10px 0px 10px 0px" }}>
+                      <Typography variant="h5">Alternative Contacts ( optional )</Typography>
                     </div>
-                    
-                  </Grid>
-                    
 
-                    
+                  </Grid>
+
+
+
                   <Grid item xs={12} sm={6} md={6}>
                     <TextField
                       id="outlined-basic"
@@ -647,7 +658,7 @@ export const ClientAdd = () => {
                     />
                   </Grid>
 
-                
+
                   <Grid item xs={12} sm={6} md={6}>
                     <div>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -686,7 +697,7 @@ export const ClientAdd = () => {
                   </Grid>
 
 
-               
+
 
                   <Grid item xs={12}>
                     <div
@@ -711,42 +722,24 @@ export const ClientAdd = () => {
 
               <CustomTabPanel value={value} index={1}>
                 <Grid container spacing={2}>
-               
-                <Grid item xs={12} sm={4} md={4}>
-                    <TextField
-                      id="outlined-basic"
-                      label="Country"
-                      variant="outlined"
-                      style={{ width: "100%" }}
-                      name="country"
-                      value={formDataTrainer.country}
-                      onChange={handleChangeTrainer}
-                    />
+
+                  <Grid item xs={12} sm={4} md={4}>
+                    <CountryRegionSelector country={country} setCountry={setCountry} />
                   </Grid>
 
-                  <Grid item xs={12} sm={8} md={8}>
-                  <div>
-      <label>
-        Select Country:
-        <input type="text" value={country} onChange={handleCountryChange} />
-      </label>
-      <br />
-      <label>
-        Search Address:
-        <input type="text" value={address} onChange={handleAddressChange} />
-        <ul>
-          {addressOptions.map((option) => (
-            <li key={option.place_id} onClick={() => handleAddressSelect(option.description)}>
-              {option.description}
-            </li>
-          ))}
-        </ul>
-      </label>
-    </div>
-                  </Grid>
+{
+    
+      country !== "" &&  <Grid item xs={12} sm={8} md={8}>
+     <AddressAutoComplete selectedCountry={country} setAddress={setAddress} />
+    </Grid>
+}
+                 
+              
+
                 
 
-                <Grid item xs={12} sm={4} md={4}>
+
+                  <Grid item xs={12} sm={4} md={4}>
                     <TextField
                       id="outlined-basic"
                       label="Street Address"
@@ -782,16 +775,16 @@ export const ClientAdd = () => {
                     />
                   </Grid>
 
-               
 
 
-                 
 
+
+                  {/* 
                   <Grid item xs={12}>
                     <div
                       style={{
                         padding: 5,
-                        // backgroundColor: "#F4EAE0",
+                      
                         borderRadius: 10,
                         display: "flex",
                         justifyContent: "space-between",
@@ -830,7 +823,7 @@ export const ClientAdd = () => {
 
                   {inputFields.map((field, index) => (
                     <Grid item xs={12} sm={12} md={4} key={field.id}>
-                      {/* ... your numbering logic ... */}
+                   
                       {index % 3 === 0 ? (
                         <div
                           style={{
@@ -842,11 +835,11 @@ export const ClientAdd = () => {
                           {index % 3 === 0 &&
                             setCounter + Math.floor(index / 3)}
                           .{" "}
-                          {/* Displaying numbering for each set of four input fields */}
+                        
                         </div>
                       ) : (
                         <div style={{ padding: "5px", marginBottom: "5px" }}>
-                          {/* Displaying numbering for each set of four input fields */}
+                 
                         </div>
                       )}
                       {field.label === "Courses" ? (
@@ -862,7 +855,7 @@ export const ClientAdd = () => {
                             input={<OutlinedInput label={field.label} />}
                             style={{ height: "56px" }}
                           >
-                            {/* Replace 'course' with your actual array of course options */}
+                      
                             {course.map((name) => (
                               <MenuItem key={name} value={name}>
                                 <ListItemText color="black" primary={name} />
@@ -892,7 +885,7 @@ export const ClientAdd = () => {
                     <div
                       style={{
                         padding: 5,
-                        // backgroundColor: "#F4EAE0",
+                     
                         borderRadius: 10,
                         display: "flex",
                         justifyContent: "space-between",
@@ -931,7 +924,7 @@ export const ClientAdd = () => {
 
                   {inputFieldsAc.map((field, index) => (
                     <Grid item xs={12} sm={12} md={4} key={field.id}>
-                      {/* ... your numbering logic ... */}
+                    
                       {index % 3 === 0 ? (
                         <div
                           style={{
@@ -943,11 +936,11 @@ export const ClientAdd = () => {
                           {index % 3 === 0 &&
                             setCounterAc + Math.floor(index / 3)}
                           .{" "}
-                          {/* Displaying numbering for each set of four input fields */}
+                   
                         </div>
                       ) : (
                         <div style={{ padding: "5px", marginBottom: "5px" }}>
-                          {/* Displaying numbering for each set of four input fields */}
+                   
                         </div>
                       )}
 
@@ -968,7 +961,7 @@ export const ClientAdd = () => {
                         onChange={(e) => handleChange3Ac(e, field.id)}
                       />
                     </Grid>
-                  ))}
+                  ))} */}
 
                   <Grid item xs={12}>
                     <div
@@ -1004,6 +997,30 @@ export const ClientAdd = () => {
               <CustomTabPanel value={value} index={2}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
+                    <DropzoneComponent />
+                  </Grid>
+
+
+                  <Grid item xs={12}>
+                    <TextareaAutosize
+                      style={{
+                        background: "transparent",
+                        padding: 10,
+                        width: `${!isMobile ? "100%" : "93%"}`,
+
+                        borderColor: "#814151",
+                      }}
+                      aria-label="minimum height"
+                      minRows={4}
+                      maxRows={5}
+                      placeholder="Description"
+                      name="description"
+                      value={formDataTrainer.description}
+                      onChange={handleChangeTrainer}
+                    />
+                  </Grid>
+
+                  {/* <Grid item xs={12}>
                     <TextField
                       id="outlined-basic"
                       label="Teaching Experience In Years"
@@ -1032,9 +1049,9 @@ export const ClientAdd = () => {
                       value={formDataTrainer.description}
                       onChange={handleChangeTrainer}
                     />
-                  </Grid>
+                  </Grid> */}
 
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <div style={{ marginBottom: "20px", marginTop: "20px" }}>
                       <Typography
                         style={{
@@ -1156,7 +1173,7 @@ export const ClientAdd = () => {
                         </a>
                       </p>
                     </div>
-                  </Grid>
+                  </Grid> */}
 
                   <Grid item xs={12}>
                     <div
