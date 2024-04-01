@@ -15,8 +15,8 @@ import { Team } from '../pages/Vendors/Team'
 import { Rates } from '../pages/Rates/Rates'
 import { Orders } from '../pages/Orders/Orders'
 import {  Inventory } from '../pages/Categories/Inventory'
-import { Sales } from '../pages/Sales/Sales'
-import { Plans } from '../pages/Plans/Plans'
+
+
 import { Accounts } from '../pages/Accounts/Accounts'
 import { Users } from '../pages/Users/Users'
 import {  ViewInventory } from '../pages/Categories/ViewInventory'
@@ -27,7 +27,13 @@ import { B2BOrders } from '../pages/Orders/B2BOrders'
 import { AddB2BOrder } from '../pages/Orders/AddB2BOrder'
 import { AddUsers } from '../pages/Users/AddUsers'
 import { AddOrder } from '../pages/Orders/AddOrders'
-import { CreateInvoice } from '../pages/Accounts/CreateInvoice'
+
+import { ClientView } from '../pages/ManageB2BUsers/ClientView'
+import { CreateInvoice } from '../pages/Accounts/CreateInvoiceAcc'
+import { Invoices } from '../pages/Accounts/Invoices'
+import { AllInvoices } from '../pages/Accounts/AllInvoices'
+
+
 
 
 
@@ -153,6 +159,42 @@ const PrivateRoutes = () => {
             </SuspensedView>
           }
         />
+
+<Route
+          path='accounts/invoice-view/*'
+          element={
+            <SuspensedView>
+              < AllInvoices/>
+            </SuspensedView>
+          }
+        />
+        <Route
+          path='accounts/invoice-view/view/:id'
+          element={
+            <SuspensedView>
+              <Invoices />
+            </SuspensedView>
+          }
+        />
+     
+     
+      
+        {/* <Route
+          path='sales/sales-view/*'
+          element={
+            <SuspensedView>
+              <SalesView />
+            </SuspensedView>
+          }
+          /> */}
+          {/* <Route
+          path='sales/sales-view/view/:id'
+          element={
+            <SuspensedView>
+              <Invoices />
+            </SuspensedView>
+          }
+          /> */}
 {/* 
 <Route
           path='plans/*'
@@ -204,6 +246,15 @@ const PrivateRoutes = () => {
           element={
             <SuspensedView>
               <ClientAdd />
+            </SuspensedView>
+          }
+        />
+
+     <Route
+          path='client_view/:id/*'
+          element={
+            <SuspensedView>
+              <ClientView />
             </SuspensedView>
           }
         />

@@ -40,10 +40,10 @@ export const JobCard = ({Fun,Data}) => {
 
     <Box sx={{display:"flex",justifyContent:"left",alignItems:"center",marginTop:"15px"}}>
       <Box>
-      <Typography sx={{fontSize:"16px"}}>User Name :</Typography>
+      <Typography sx={{fontSize:"16px"}}>Client :</Typography>
       </Box>
       <Box sx={{marginLeft:"10px"}}>
-        <Typography sx={{fontSize:"14px"}}>{Data && Data.user.name}</Typography>
+        <Typography sx={{fontSize:"14px"}}>{Data && Data.client.name}</Typography>
       </Box>
     </Box>
 
@@ -52,7 +52,7 @@ export const JobCard = ({Fun,Data}) => {
         <LocalPhoneIcon sx={{fontSize:"30px"}}/>
       </Box>
       <Box sx={{marginLeft:"10px"}}>
-        <Typography sx={{fontSize:"14px"}}>{Data && Data.user.mobileNumber}</Typography>
+        <Typography sx={{fontSize:"14px"}}>{Data && Data.client.mobile}</Typography>
       </Box>
     </Box>
 
@@ -61,7 +61,7 @@ export const JobCard = ({Fun,Data}) => {
         <FmdGoodIcon sx={{fontSize:"30px"}}/>
       </Box>
       <Box sx={{marginLeft:"10px"}}>
-        <Typography sx={{fontSize:"14px"}}>{Data && Data.user.address},{Data && Data.user.pincode},{Data && Data.user.city},{Data && Data.user.country}</Typography>
+        <Typography sx={{fontSize:"14px"}}>{Data && Data.client.address},{Data && Data.client.pincode},{Data && Data.client.city},{Data && Data.client.country}</Typography>
       </Box>
     </Box>
 

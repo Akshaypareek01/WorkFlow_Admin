@@ -17,7 +17,8 @@ import axios from 'axios';
 const column = [
   { name: "Name" },
   { name: "Email" },
-  {name: "Total Products"},
+  {name: "Phone Number"},
+  {name: "Client Type"},
   { name: "Created At" },
   { name: "Action" },
   { name: "Delete" },
@@ -28,7 +29,7 @@ export const Client = () => {
   const [rows,setrows] = useState([])
   const [update,setupdate] = useState([])
   const handelViewClick=(id)=>{
-    navigate(`/categories_view/${id}`);
+    navigate(`/client_view/${id}`);
   }
 
   const handelAddUser=()=>{
@@ -37,15 +38,16 @@ export const Client = () => {
  
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`${Base_url}api/users`);
+      const response = await axios.get(`${Base_url}api/client`);
 
       if (response.status === 200) {
         const fetchedCategories = response.data;
         setCategories(fetchedCategories);
         const FormatedData = fetchedCategories.map((el,index)=>({
           "Name":el.name,
-          "description":el.description,
-          "Products":"0",
+          "Email":el.email,
+          "PhoneNumber":el.mobile,
+          "ClientType":el.type,
           "CreatedAt":el.createdAt,
           "Action":<EditIcon onClick={()=>handelViewClick(el._id)} style={{ color: `${ThemColor.icon}` }} />,
           "Delete":<DeleteIcon color="error" onClick={()=>deleteUser(el._id)} />
@@ -61,7 +63,7 @@ export const Client = () => {
 
   const deleteUser = async(ID) => {
     try{
-      const res = await axios.delete(`${Base_url}api/category/${ID}`);
+      const res = await axios.delete(`${Base_url}api/client/${ID}`);
       console.log(res)
       setupdate((prev)=>prev+1)
     }

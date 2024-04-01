@@ -129,20 +129,19 @@ export const ClientAdd = () => {
     name: "",
     mobile: "",
     email: "",
-    dob: null,
+    // dob: null,
 
     alter_name: "",
     alter_mobile: "",
     alter_email: "",
-    alter_dob: null,
+    // alter_dob: null,
 
    
     pincode: "",
-    address: "",
     address_type: "",
     city: "",
-
-    Address: "",
+    country:"",
+    address: "",
     description: "",
   });
 
@@ -164,6 +163,7 @@ export const ClientAdd = () => {
   };
 
   const handleTypeChange = (event) => {
+    console.log("type",event.target.value)
     setType(event.target.value);
   };
 
@@ -212,6 +212,12 @@ export const ClientAdd = () => {
     setFormDatasetFormData((prevData) => ({
       ...prevData,
       dob: date,
+    }));
+  };
+  const handleAlterDateChangeTrainer = (date) => {
+    setFormDatasetFormData((prevData) => ({
+      ...prevData,
+      alter_dob: date,
     }));
   };
   const handleChange3 = (e, id) => {
@@ -297,48 +303,49 @@ export const ClientAdd = () => {
     //   }
     // }
 
-    console.log("Data of map inputs", formDataTrainer);
+    console.log("Data of map inputs", formDataTrainer,"country",country);
 
-    // const formData = new FormData();
+    const formData = new FormData();
+    formData.append("type", formDataTrainer.type);
 
-    // formData.append("name", formDataTrainer.name);
-    // formData.append("email", formDataTrainer.email);
-    // formData.append("gender", formDataTrainer.gender);
-    // formData.append("password", formDataTrainer.password);
-    // formData.append("mobile", formDataTrainer.mobile);
-    // formData.append("dob", formDataTrainer.dob);
-    // formData.append("Address", formDataTrainer.Address);
-    // formDataTrainer.Expertise.forEach((el, index) => {
-    //   formData.append("expertise", el);
-    // });
+    formData.append("business_Name", formDataTrainer.business_Name);
+    formData.append("business_Website", formDataTrainer.business_Website);
+    formData.append("business_Email", formDataTrainer.business_Email);
+    formData.append("business_Phone", formDataTrainer.business_Phone);
 
-    // formData.append("city", formDataTrainer.city);
-    // formData.append("pincode", formDataTrainer.pincode);
-    // formData.append("country", formDataTrainer.country);
-    // const qualificationData = JSON.stringify(inputFields);
-    // const additional_courses = JSON.stringify(inputFieldsAc);
-    // formData.append("qualification", qualificationData);
-    // formData.append("additional_courses", additional_courses);
-    // formData.append("teachingExperience", formDataTrainer.teachingExperience);
-    // formData.append("description", formDataTrainer.description);
-    // const ImageData = [TeacherimageFile1, TeacherimageFile2];
-    // formData.append("images", TeacherimageFile1);
-    // formData.append("images", TeacherimageFile2);
-    // setTeacherLoading(true);
-    // axios
-    //   .post(`${Base_url}teacher_signup`, formData)
-    //   .then((response) => {
-    //     setTeacherLoading(false);
-    //     console.log("Teacher created successfully:", response.data);
+    formData.append("name", formDataTrainer.name);
+    formData.append("email", formDataTrainer.email);
+    formData.append("mobile", formDataTrainer.mobile);
+
+    formData.append("alter_name", formDataTrainer.name);
+    formData.append("alter_email", formDataTrainer.email);
+    formData.append("alter_mobile", formDataTrainer.mobile);
+
+ 
+    formData.append("address_type", formDataTrainer.address_type);
+    formData.append("address", formDataTrainer.address);
+    formData.append("city", formDataTrainer.city);
+    formData.append("pincode", formDataTrainer.pincode);
+    formData.append("country", formDataTrainer.country);
+
+    formData.append("description", formDataTrainer.description);
+  
+    setTeacherLoading(true);
+    console.log("FormData ====>",formData)
+    axios
+      .post(`${Base_url}api/client`, formDataTrainer)
+      .then((response) => {
+        setTeacherLoading(false);
+        console.log("Teacher created successfully:", response.data);
       
-    //     alert("Trainer Account created successfully");
-    //     handelGoBack();
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error creating user:", error);
-    //     setTeacherLoading(false);
-    //     alert("Refresh and try again");
-    //   });
+        alert("Trainer Account created successfully");
+        handelGoBack();
+      })
+      .catch((error) => {
+        console.error("Error creating user:", error);
+        setTeacherLoading(false);
+        alert("Refresh and try again");
+      });
   };
 
   const Expertise = [
@@ -412,7 +419,7 @@ export const ClientAdd = () => {
       // Updating the form state with the fetched address
       setFormDatasetFormData(prevState => ({
         ...prevState,
-        Address: address.name + "," + address1,
+        address: address.name + "," + address1,
         pincode: address.address_components.find(component => component.types.includes('postal_code'))?.long_name || '',
         city: address.address_components.find(component => component.types.includes('locality'))?.long_name || '',
         country: address.address_components.find(component => component.types.includes('country'))?.long_name || ''
@@ -518,8 +525,9 @@ export const ClientAdd = () => {
                         <Select
                           labelId="demo-multiple-checkbox-label"
                           id="demo-multiple-checkbox"
-                          value={type}
-                          onChange={handleTypeChange}
+                          name="type"
+                          value={formDataTrainer.type}
+                          onChange={handleChangeTrainer}
                           sx={{ overflowX: "hidden", width: "100%" }}
                         >
 
@@ -532,7 +540,7 @@ export const ClientAdd = () => {
                     </div>
                   </Grid>
                   {
-                    type === "Business" && <>
+                    formDataTrainer.type === "Business" && <>
                       <Grid item xs={12} sm={6} md={6}>
                         <TextField
                           id="outlined-basic"
@@ -600,7 +608,7 @@ export const ClientAdd = () => {
                   </Grid>
 
 
-                  <Grid item xs={12} sm={6} md={6}>
+                  {/* <Grid item xs={12} sm={6} md={6}>
                     <div>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DateField
@@ -611,7 +619,7 @@ export const ClientAdd = () => {
                         />
                       </LocalizationProvider>
                     </div>
-                  </Grid>
+                  </Grid> */}
 
                   <Grid item xs={12} sm={6} md={6}>
                     <TextField
@@ -653,24 +661,24 @@ export const ClientAdd = () => {
                       variant="outlined"
                       style={{ width: "100%" }}
                       name="alter_name"
-                      value={formDataTrainer.name}
+                      value={formDataTrainer.alter_name}
                       onChange={handleChangeTrainer}
                     />
                   </Grid>
 
 
-                  <Grid item xs={12} sm={6} md={6}>
+                  {/* <Grid item xs={12} sm={6} md={6}>
                     <div>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DateField
                           placeholder="DOB"
                           style={{ width: "100%" }}
                           value={formDataTrainer.alter_dob}
-                          onChange={handleDateChangeTrainer}
+                          onChange={handleAlterDateChangeTrainer}
                         />
                       </LocalizationProvider>
                     </div>
-                  </Grid>
+                  </Grid> */}
 
                   <Grid item xs={12} sm={6} md={6}>
                     <TextField
@@ -745,8 +753,8 @@ export const ClientAdd = () => {
                       label="Street Address"
                       variant="outlined"
                       style={{ width: "100%" }}
-                      name="Address"
-                      value={formDataTrainer.Address}
+                      name="address"
+                      value={formDataTrainer.address}
                       onChange={handleChangeTrainer}
                     />
                   </Grid>

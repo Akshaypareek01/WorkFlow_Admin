@@ -21,6 +21,11 @@ const handelCreateInvoice = ()=>{
   navigate("create-invoice/")
 }
 
+
+const handelSalesView = ()=>{
+  navigate("sales-view/")
+}
+
   return (
     <Box >
 
@@ -36,7 +41,9 @@ const handelCreateInvoice = ()=>{
 
             <Box>
               
-              <Button variant="contained" style={{marginLeft:"20px",background:"#FF8604"}} onClick={handelCreateInvoice} startIcon={<AddIcon />} >Create Invoice</Button>
+              <Button variant="contained" style={{marginLeft:"5px",background:"#FF8604"}} onClick={handelCreateInvoice} startIcon={<AddIcon />} >Create Invoice</Button>
+              <Button variant="contained" style={{marginLeft:"20px",background:"blue" ,width:"auto"}} onClick={handelSalesView} > View Invoice</Button>
+
             </Box>
           </Box>
 

@@ -95,6 +95,15 @@ const navigate = useNavigate()
     // setFilterRows(rows);
   };
 
+  const handelAllInvoiceView = ()=>{
+    navigate("invoice-view/")
+  }
+
+
+
+
+
+
   return (
     <Box >
 
@@ -112,7 +121,7 @@ const navigate = useNavigate()
 
             <Box>
               
-              <Button variant="contained" style={{marginLeft:"20px",background:"#FF8604"}} size='large' >Stock</Button>
+              <Button onClick={handelAllInvoiceView} variant="contained" style={{marginLeft:"20px",background:"#FF8604"}} size='large' >Invoices</Button>
             </Box>
           </Box>
 

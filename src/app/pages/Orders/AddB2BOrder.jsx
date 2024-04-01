@@ -48,10 +48,7 @@ export const AddB2BOrder = () => {
     name:"",
     email:"",
     mobileNumber:"",
-    address:"",
-    pincode:"",
-    city:"",
-    country:"",
+    client:"",
     jobDate:"",
     startTime:"",
     stopTime:"",
@@ -74,7 +71,7 @@ export const AddB2BOrder = () => {
   const [TechnicianData,setTechnicianData] = useState([])
   const [SparePartsData,setSparePratsTechnicianData] = useState([])
   const [TeamMemberData,setTeamMemberData] = useState([])
-
+  const [ClientData,setClientData] = useState([])
   const [PartsData, setPartsData] = React.useState([]);
   const [AllSparePartsData, setAllSparePartsData] = useState([])
   const handlePartsChange = (event) => {
@@ -162,6 +159,7 @@ console.log("All Parts DAta ====>",matchingIds)
       startTime:formData.startTime,
       stopTime:formData.stopTime,
       user:userDetails,
+      client:formData.client,
       travelTime:formData.travelTime
     }
 
@@ -209,6 +207,23 @@ console.log("All Parts DAta ====>",matchingIds)
     }
   };
 
+  const fetchClients = async () =>{
+    try {
+      const response = await axios.get(`${Base_url}api/client`);
+
+      if (response.status === 200) {
+        const Client = response.data;
+        setClientData(Client)
+
+
+      } else {
+        console.error('Error fetching categories:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  }
+
   const handelBack = ()=>{
     window.history.back();
    }
@@ -247,6 +262,7 @@ console.log("All Parts DAta ====>",matchingIds)
 
 
   useEffect(()=>{
+    fetchClients()
     fetchTeamMember()
     getAllParts()
   },[update])
@@ -415,7 +431,26 @@ console.log("All Parts DAta ====>",matchingIds)
          <Typography>Client Details</Typography>
       </Grid>
 
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={12}>
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Select Client</InputLabel>
+        <Select
+          fullWidth
+          label="From"
+          name="client"
+          value={formData.client}
+          onChange={handleInputChange}
+        >
+          {ClientData.map((el) => (
+            <MenuItem key={el._id} value={el._id}>
+              {el.name} 
+            </MenuItem>
+          ))}
+        </Select>
+        </FormControl>
+      </Grid>
+
+      {/* <Grid item xs={12} sm={6}>
         <TextField
           fullWidth
           label="Name"
@@ -484,7 +519,7 @@ console.log("All Parts DAta ====>",matchingIds)
           value={formData.country}
           onChange={handleInputChange}
         />
-      </Grid>
+      </Grid> */}
    
       <Grid item xs={12} sx={{textAlign:"right"}}>
         <Button variant="contained" sx={{bgcolor:"orange"}} size='large' onClick={handleSubmit}>
