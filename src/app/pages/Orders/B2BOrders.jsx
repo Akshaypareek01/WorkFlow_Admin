@@ -90,6 +90,8 @@ const thTdStyle = {
   const [InProgressJobData,setInProgressJobData] = useState([]);
   const [OnHoldJobData,setOnHoldJobData] = useState([]);
   const [CompletedJobData,setCompletedJobData] = useState([]);
+  const [WorkerTravling,setWorkerTravling] = useState([]);
+  const [TravelCompleted,setTravelCompleted] = useState([]);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
@@ -140,12 +142,15 @@ const thTdStyle = {
       const OnHoldJobs = Jobs.filter (el=>el.status === 'onhold')
       const InProgressJobs = Jobs.filter (el=>el.status === 'inprogress')
       const CompletedJobs = Jobs.filter (el=>el.status === 'completed')
-
+      const WorkerTravling = Jobs.filter (el=>el.status === 'worker traveling')
+      const TravevlCompleted = Jobs.filter (el=>el.status === 'travel completed')
+      // worker traveling,travel completed
       setPendingJobData(PendingJobs);
       setOnHoldJobData(OnHoldJobs);
       setInProgressJobData(InProgressJobs);
       setCompletedJobData(CompletedJobs);
-
+      setWorkerTravling(WorkerTravling);
+      setTravelCompleted(TravevlCompleted);
       return response.data;
     } catch (error) {
       throw error.response.data;
@@ -224,10 +229,13 @@ const thTdStyle = {
        
         >
           <Tab label="Pending" {...a11yProps(0)}  style={{fontSize:"16px",fontWeight:600,color:`${value === 0 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}}/>
-          <Tab label="In Progress" {...a11yProps(1)}  style={{fontSize:"16px",fontWeight:600,color:`${value === 1 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}}/>
-          <Tab label="On Hold" {...a11yProps(2)}  style={{fontSize:"16px",fontWeight:600,color:`${value === 2 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}}/>
-          <Tab label="Completed" {...a11yProps(3)} style={{fontSize:"16px",fontWeight:600,color:`${value === 3 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}} />
-         
+          <Tab label="Worker Traveling" {...a11yProps(1)} style={{fontSize:"16px",fontWeight:600,color:`${value === 1 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}} />
+          <Tab label="Worker Travel Completed" {...a11yProps(2)} style={{fontSize:"16px",fontWeight:600,color:`${value === 2 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}} />
+          
+          <Tab label="In Progress" {...a11yProps(3)}  style={{fontSize:"16px",fontWeight:600,color:`${value === 3 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}}/>
+          <Tab label="On Hold" {...a11yProps(4)}  style={{fontSize:"16px",fontWeight:600,color:`${value === 4 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}}/>
+          <Tab label="Completed" {...a11yProps(5)} style={{fontSize:"16px",fontWeight:600,color:`${value === 5 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}} />
+          
         </Tabs>
         </ThemeProvider>
       </Box>
@@ -277,7 +285,7 @@ const thTdStyle = {
       <CustomTabPanel value={value} index={1}>
       <Grid container spacing={2}>
             {
-                InProgressJobData && InProgressJobData.map((el,index)=>{
+                WorkerTravling && WorkerTravling.map((el,index)=>{
                    return <Grid item xs={12} sm={6} md={6} lg={3} key={index}>
                     <JobCard Fun={()=>handelViewOrderClick(el)} Data={el}/>
                     </Grid>
@@ -291,7 +299,7 @@ const thTdStyle = {
       <CustomTabPanel value={value} index={2}>
       <Grid container spacing={2}>
             {
-                OnHoldJobData && OnHoldJobData.map((el,index)=>{
+                TravelCompleted && TravelCompleted.map((el,index)=>{
                    return <Grid item xs={12} sm={6} md={6} lg={3} key={index}>
                     <JobCard Fun={()=>handelViewOrderClick(el)} Data={el}/>
                     </Grid>
@@ -305,6 +313,34 @@ const thTdStyle = {
       <CustomTabPanel value={value} index={3}>
       <Grid container spacing={2}>
             {
+                InProgressJobData && InProgressJobData.map((el,index)=>{
+                   return <Grid item xs={12} sm={6} md={6} lg={3} key={index}>
+                    <JobCard Fun={()=>handelViewOrderClick(el)} Data={el}/>
+                    </Grid>
+                })
+            }
+             
+
+              </Grid>
+      </CustomTabPanel>
+
+      <CustomTabPanel value={value} index={4}>
+      <Grid container spacing={2}>
+            {
+                OnHoldJobData && OnHoldJobData.map((el,index)=>{
+                   return <Grid item xs={12} sm={6} md={6} lg={3} key={index}>
+                    <JobCard Fun={()=>handelViewOrderClick(el)} Data={el}/>
+                    </Grid>
+                })
+            }
+             
+
+              </Grid>
+      </CustomTabPanel>
+
+      <CustomTabPanel value={value} index={5}>
+      <Grid container spacing={2}>
+            {
                 CompletedJobData && CompletedJobData.map((el,index)=>{
                    return <Grid item xs={12} sm={6} md={6} lg={3} key={index}>
                     <JobCard Fun={()=>handelViewOrderClick(el)} Data={el}/>
@@ -315,6 +351,8 @@ const thTdStyle = {
 
               </Grid>
       </CustomTabPanel>
+
+     
 
 
     </Box>
