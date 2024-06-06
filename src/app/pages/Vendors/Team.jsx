@@ -12,7 +12,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Base_url } from '../../Config/BaseUrl';
 import { toAbsoluteUrl } from '../../../_metronic/helpers';
-
+import { GenralTabel } from '../../TabelComponents/GenralTable';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { ThemColor } from '../../Them/ThemColor';
 const orangeTheme = createTheme({
   palette: {
     primary: {
@@ -33,7 +36,7 @@ function CustomTabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 0 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -53,6 +56,23 @@ function a11yProps(index) {
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
+
+const column = [
+  { name: "Name" },
+  { name: "Gender" },
+  {name: "Phone Number"},
+  {name: "Email"},
+  { name: "Languages" },
+  { name: "Experience" },
+  { name: "Address" },
+  { name: "City" },
+  { name: "Country" },
+  { name: "Status" },
+  { name: "CreatedAt" },
+  { name: "Action" },
+  { name: "Delete" },
+];
+
 export const Team = () => {
  const navigate = useNavigate()
   const [value, setValue] = React.useState(0);
@@ -63,7 +83,7 @@ export const Team = () => {
   const [WholesalersData,setWholesalersData] = useState([]);
   const [MediatorsData,setMediatorsData] = useState([]);
   const [FactoryData,setFactoryData] = useState([]);
-
+   
   const [TechnicianData,setTechnicianData] = useState([])
   const [SparePartsData,setSparePratsTechnicianData] = useState([])
   const handleChange = (event, newValue) => {
@@ -92,6 +112,11 @@ export const Team = () => {
     navigate("add")
   ]
 
+  const handelViewClick=(id)=>{
+    navigate(`/team/view/${id}`);
+  }
+
+
   const fetchTeamMembers = async () => {
     try {
       const response = await axios.get(`${Base_url}api/worker`);
@@ -110,11 +135,49 @@ export const Team = () => {
         const SparePartsData= fetchedB2BUsers.filter((el)=>{
           return el.role === "spare parts"
         })
+       
+
+
+        const FormatedData = TechnicianData.map((el,index)=>({
+          "Name":el.name,
+          "gender":el.gender,
+          "PhoneNumber":el.mobile,
+          "Email":el.email,
+          "languages":el.languages.join(", "),
+          "experience":el.experience,
+          "address":el.address,
+          "City":el.city,
+          "country":el.country,
+          
+          "status":el.status,
+
+          "CreatedAt":el.createdAt,
+          "Action":<EditIcon onClick={()=>handelViewClick(el._id)} style={{ color: `${ThemColor.icon}` }} />,
+          "Delete":<DeleteIcon color="error" onClick={()=>deleteUser(el._id)} />
+        }))
+
+        const FormatedData2 = SparePartsData.map((el,index)=>({
+          "Name":el.name,
+          "gender":el.gender,
+          "PhoneNumber":el.mobile,
+          "Email":el.email,
+          "languages":el.languages.join(", "),
+          "experience":el.experience,
+          "address":el.address,
+          "City":el.city,
+          "country":el.country,
+          
+          "status":el.status,
+
+          "CreatedAt":el.createdAt,
+          "Action":<EditIcon onClick={()=>handelViewClick(el._id)} style={{ color: `${ThemColor.icon}` }} />,
+          "Delete":<DeleteIcon color="error" onClick={()=>deleteUser(el._id)} />
+        }))
 
     
          
-        setTechnicianData(TechnicianData);
-        setSparePratsTechnicianData(SparePartsData);
+        setTechnicianData(FormatedData);
+        setSparePratsTechnicianData(FormatedData2);
 
       } else {
         console.error('Error fetching categories:', response.statusText);
@@ -126,7 +189,7 @@ export const Team = () => {
 
   const deleteUser = async(ID) => {
     try{
-      const res = await axios.delete(`${Base_url}api/category/${ID}`);
+      const res = await axios.delete(`${Base_url}api/worker/${ID}`);
       console.log(res)
       setupdate((prev)=>prev+1)
     }
@@ -202,61 +265,12 @@ export const Team = () => {
 
       <CustomTabPanel value={value} index={0}>
        
-
-         <Grid container spacing={2}>
-                
-
-               {
-                TechnicianData && TechnicianData.length > 0  ? TechnicianData.map((el,index)=>{
-                  return <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
-                  <InfoCard  Data={el}/>
-                  </Grid>
-                })
-                :
-                <Grid  item xs={12} style={{textAlign:"center"}}>
-                    <div style={{textAlign:"center",height:"300px"}}>
-             <img src={toAbsoluteUrl('/media/illustrations/dozzy-1/5-dark.png')} style={{height:"90%"}}  alt='' />
-            <h2>No Technician Member Found</h2>
-            </div>
-                  </Grid>
-               }
-
-               
-
-               
-
-
-              
-              </Grid>
+      <GenralTabel column={column} rows={TechnicianData} />
         
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={1}>
-      <Grid container spacing={2}>
-                
-
-                {
-                 SparePartsData && SparePartsData.length > 0 ? SparePartsData.map((el,index)=>{
-                   return <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
-                   <InfoCard  Data={el}/>
-                   </Grid>
-                 })
-                 :
-                <Grid  item xs={12} style={{textAlign:"center"}}>
-                    <div style={{textAlign:"center",height:"300px"}}>
-             <img src={toAbsoluteUrl('/media/illustrations/dozzy-1/5-dark.png')} style={{height:"90%"}}  alt='' />
-            <h2>No Spare Parts Team Member Found</h2>
-            </div>
-                  </Grid>
-                }
- 
-                
- 
-                
- 
- 
-               
-               </Grid>
+      <GenralTabel column={column} rows={SparePartsData} />
       </CustomTabPanel>
 
       

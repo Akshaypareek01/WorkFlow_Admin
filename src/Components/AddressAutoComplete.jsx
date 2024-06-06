@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import "./AddressAutoComplete.css";
 import { TextField } from "@mui/material";
-const AddressAutoComplete = ({selectedCountry,setAddress}) => {
+const AddressAutoComplete = ({selectedCountry,setAddress,updateCoordinates}) => {
  const autoCompleteRef = useRef();
  const inputRef = useRef();
  const options = {
@@ -17,7 +17,9 @@ const AddressAutoComplete = ({selectedCountry,setAddress}) => {
   );
   autoCompleteRef.current.addListener("place_changed", async function () {
     const place = await autoCompleteRef.current.getPlace();
-    console.log({ place });
+    const { lat, lng } = place.geometry.location;
+    console.log("Address search by googel -==============>",lat(),lng());
+    updateCoordinates(lat(),lng())
     setAddress(place)
    });
  }, []);

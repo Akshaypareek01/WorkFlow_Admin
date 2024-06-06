@@ -118,7 +118,7 @@ export const ClientAdd = () => {
   ]);
   const [setCounter, setSetCounter] = useState(1);
   const [setCounterAc, setSetCounterAc] = useState(1);
-
+  const [loaction,setLocation] = useState({lat:"",lng:""})
   const [formDataTrainer, setFormDatasetFormData] = useState({
     type: "",
     business_Name: "",
@@ -143,6 +143,8 @@ export const ClientAdd = () => {
     country:"",
     address: "",
     description: "",
+    lat:"",
+    lng:""
   });
 
   const [userimageFile2, setUserImageFile2] = useState(null);
@@ -153,6 +155,7 @@ export const ClientAdd = () => {
   const [value, setValue] = React.useState(0);
   const [country, setCountry] = useState('');
   const [address, setAddress] = useState('');
+  
   const [addressOptions, setAddressOptions] = useState([]);
 
  
@@ -289,49 +292,19 @@ export const ClientAdd = () => {
 
     setVisibleSection(currentSection);
   };
-
+  const updateCoordinates = (lat, lng) => {
+    console.log("Updating Cordianets ===>", lat, lng);
+    setFormDatasetFormData(prevData => ({
+      ...prevData,
+      lat,
+      lng
+    }));
+  }
   const handelTrainerContinue = () => {
-    // if (!isTCChecked) {
-    //   alert("Please accepts Terms & Conditions and Privacy Policy");
-    //   return;
-    // }
-
-    // for (const key in formDataTrainer) {
-    //   if (formDataTrainer[key] === "") {
-    //     alert(`${key} is required.`);
-    //     return; // Stop the submission process if any field is empty
-    //   }
-    // }
-
-    console.log("Data of map inputs", formDataTrainer,"country",country);
-
-    const formData = new FormData();
-    formData.append("type", formDataTrainer.type);
-
-    formData.append("business_Name", formDataTrainer.business_Name);
-    formData.append("business_Website", formDataTrainer.business_Website);
-    formData.append("business_Email", formDataTrainer.business_Email);
-    formData.append("business_Phone", formDataTrainer.business_Phone);
-
-    formData.append("name", formDataTrainer.name);
-    formData.append("email", formDataTrainer.email);
-    formData.append("mobile", formDataTrainer.mobile);
-
-    formData.append("alter_name", formDataTrainer.name);
-    formData.append("alter_email", formDataTrainer.email);
-    formData.append("alter_mobile", formDataTrainer.mobile);
-
  
-    formData.append("address_type", formDataTrainer.address_type);
-    formData.append("address", formDataTrainer.address);
-    formData.append("city", formDataTrainer.city);
-    formData.append("pincode", formDataTrainer.pincode);
-    formData.append("country", formDataTrainer.country);
-
-    formData.append("description", formDataTrainer.description);
-  
     setTeacherLoading(true);
-    console.log("FormData ====>",formData)
+    
+    console.log("FormData ====>",formDataTrainer)
     axios
       .post(`${Base_url}api/client`, formDataTrainer)
       .then((response) => {
@@ -738,7 +711,7 @@ export const ClientAdd = () => {
 {
     
       country !== "" &&  <Grid item xs={12} sm={8} md={8}>
-     <AddressAutoComplete selectedCountry={country} setAddress={setAddress} />
+     <AddressAutoComplete selectedCountry={country} setAddress={setAddress} updateCoordinates={updateCoordinates}  />
     </Grid>
 }
                  

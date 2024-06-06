@@ -32,6 +32,7 @@ import { ClientView } from '../pages/ManageB2BUsers/ClientView'
 import { CreateInvoice } from '../pages/Accounts/CreateInvoiceAcc'
 import { Invoices } from '../pages/Accounts/Invoices'
 import { AllInvoices } from '../pages/Accounts/AllInvoices'
+import { ViewB2bOrder } from '../pages/Orders/ViewB2bOrder'
 
 
 
@@ -92,7 +93,7 @@ const PrivateRoutes = () => {
           }
         /> */}
 
-<Route
+{/* <Route
           path='orders/*'
           element={
             <SuspensedView>
@@ -107,7 +108,7 @@ const PrivateRoutes = () => {
               <AddOrder />
             </SuspensedView>
           }
-        />
+        /> */}
         <Route
           path='jobs/*'
           element={
@@ -121,6 +122,15 @@ const PrivateRoutes = () => {
           element={
             <SuspensedView>
               <AddB2BOrder />
+            </SuspensedView>
+          }
+        />
+
+<Route
+          path='jobs/jobs_view/:id'
+          element={
+            <SuspensedView>
+              <ViewB2bOrder />
             </SuspensedView>
           }
         />

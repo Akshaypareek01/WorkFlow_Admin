@@ -16,6 +16,10 @@ import { Base_url } from '../../Config/BaseUrl';
 import axios from 'axios';
 import { B2BOrdersCard } from '../../../Components/B2BOrderCard';
 import { JobCard } from '../../../Components/JobCard';
+import { GenralTabel } from '../../TabelComponents/GenralTable';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { ThemColor } from '../../Them/ThemColor';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -48,7 +52,7 @@ function CustomTabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 0 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -68,6 +72,22 @@ function a11yProps(index) {
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
+
+const column = [
+  { name: "Name" },
+  { name: "Job Date" },
+  {name: "Start Time"},
+  { name: "Stop Time" },
+  { name: "Parts Required" },
+  { name: "Client" },
+  { name: "Assigned Worker" },
+  { name: "Assigned SparePart Worker" },
+  { name: "Status" },
+  { name: "CreatedAt" },
+  { name: "Action" },
+  { name: "Delete" },
+];
+
 export const B2BOrders = () => {
   const navigate = useNavigate()
   const tableStyle = {
@@ -84,121 +104,78 @@ const thTdStyle = {
   const [searchInput, setSearchInput] = useState('');
   
   const [open, setOpen] = useState(false);
-  const [OrdersData,setOrderData] = useState([]);
   const [JobData,setJobData] = useState([]);
-  const [PendingJobData,setPendingJobData] = useState([]);
-  const [InProgressJobData,setInProgressJobData] = useState([]);
-  const [OnHoldJobData,setOnHoldJobData] = useState([]);
-  const [CompletedJobData,setCompletedJobData] = useState([]);
-  const [WorkerTravling,setWorkerTravling] = useState([]);
-  const [TravelCompleted,setTravelCompleted] = useState([]);
-  const handleOpen = () => setOpen(true);
+  const [update,setupdate] = useState(0)
+
   const handleClose = () => {
     setOpen(false);
     setSelectedOrderData(null)
   }
   const [SelectedOrderData,setSelectedOrderData] = useState(null);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
   const handleChangetabs = (event, newValue) => {
     setValue(newValue);
   };
 
-  const handleSearch = () => {
-    // const filteredData = rows.filter((row) =>
-    //   Object.values(row)
-    //     .filter((value) => typeof value === 'string') // Filter only string values
-    //     .some((value) =>
-    //       value.toLowerCase().includes(searchInput.toLowerCase())
-    //     )
-    // );
-    // setFilterRows(filteredData);
-  };
-  const handleResetFilter = () => {
-    setSearchInput('');
-    // setFilterRows(rows);
-  };
 
- const createOrder = async (from, to, details, totalAmount, status) => {
-    try {
-      const response = await axios.post(`${Base_url}api/b2b_orders`, { from, to, details, totalAmount, status });
-      return response.data;
-    } catch (error) {
-      throw error.response.data;
+  const handelViewClick=(id)=>{
+    navigate(`jobs_view/${id}`);
+  }
+
+  const deleteUser = async(ID) => {
+    try{
+      const res = await axios.delete(`${Base_url}api/job/${ID}`);
+      console.log(res)
+      setupdate((prev)=>prev+1)
     }
-  };
-  
-  // Function to get all B2B orders
+    catch(err){
+      console.log("Error",err)
+    }
+  }
+
+
  const getOrders = async () => {
     try {
       const response = await axios.get(`${Base_url}api/job`);
       console.log(response.data);
       const Jobs = response.data
-      setJobData(Jobs)
 
-      const PendingJobs = Jobs.filter (el=>el.status === 'pending')
-      const OnHoldJobs = Jobs.filter (el=>el.status === 'onhold')
-      const InProgressJobs = Jobs.filter (el=>el.status === 'inprogress')
-      const CompletedJobs = Jobs.filter (el=>el.status === 'completed')
-      const WorkerTravling = Jobs.filter (el=>el.status === 'worker traveling')
-      const TravevlCompleted = Jobs.filter (el=>el.status === 'travel completed')
-      // worker traveling,travel completed
-      setPendingJobData(PendingJobs);
-      setOnHoldJobData(OnHoldJobs);
-      setInProgressJobData(InProgressJobs);
-      setCompletedJobData(CompletedJobs);
-      setWorkerTravling(WorkerTravling);
-      setTravelCompleted(TravevlCompleted);
+      
+
+      const FormatedData = Jobs.map((el,index)=>({
+        "Name":el.jobName,
+        "jobDate":el.jobDate,
+   
+        "startTime":el.startTime,
+        "stopTime":el.stopTime,
+        "partsRequired":el.partsRequired && el.partsRequired.map(part => part.partName).join(", "),
+        
+        "client":el.client && el.client.name,
+        "assignedWorker":el.assignedWorker && el.assignedWorker.name,
+        "assignedSparePartWorker":el.assignedSparePartWorker && el.assignedSparePartWorker.name,
+        "status":<Button variant='contained' color='success'> {el.status}</Button>,
+        "CreatedAt":el.createdAt,
+        "Action":<EditIcon onClick={()=>handelViewClick(el._id)} style={{ color: `${ThemColor.icon}` }} />,
+        "Delete":<DeleteIcon color="error" onClick={()=>deleteUser(el._id)} />
+      }))
+
+      setJobData(FormatedData)
+          
       return response.data;
     } catch (error) {
       throw error.response.data;
     }
   };
-  
-  // Function to get a B2B order by ID
-  const getOrderById = async (id) => {
-    try {
-      const response = await axios.get(`${Base_url}api/b2b_orders/${id}`);
-      return response.data;
-    } catch (error) {
-      throw error.response.data;
-    }
-  };
-  
-  // Function to update a B2B order
-  const updateOrder = async (id, from, to, details, totalAmount, status) => {
-    try {
-      const response = await axios.put(`${Base_url}api/b2b_orders/${id}`, { from, to, details, totalAmount, status });
-      return response.data;
-    } catch (error) {
-      throw error.response.data;
-    }
-  };
-  
-  // Function to delete a B2B order
-  const deleteOrder = async (id) => {
-    try {
-      const response = await axios.delete(`${Base_url}api/b2b_orders/${id}`);
-      return response.data;
-    } catch (error) {
-      throw error.response.data;
-    }
-  };
+ 
 
   const handelOrderClick = ()=>{
     navigate("add")
   }
 
-  const handelViewOrderClick = (data)=>{
-    setSelectedOrderData(data);
-    handleOpen()
-  }
 
   useEffect(()=>{
     getOrders();
-  },[])
+  },[update])
 
   return (
     <Box >
@@ -228,13 +205,8 @@ const thTdStyle = {
         indicatorColor="primary"
        
         >
-          <Tab label="Pending" {...a11yProps(0)}  style={{fontSize:"16px",fontWeight:600,color:`${value === 0 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}}/>
-          <Tab label="Worker Traveling" {...a11yProps(1)} style={{fontSize:"16px",fontWeight:600,color:`${value === 1 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}} />
-          <Tab label="Worker Travel Completed" {...a11yProps(2)} style={{fontSize:"16px",fontWeight:600,color:`${value === 2 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}} />
+          <Tab label="Jobs" {...a11yProps(0)}  style={{fontSize:"16px",fontWeight:600,color:`${value === 0 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}}/>
           
-          <Tab label="In Progress" {...a11yProps(3)}  style={{fontSize:"16px",fontWeight:600,color:`${value === 3 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}}/>
-          <Tab label="On Hold" {...a11yProps(4)}  style={{fontSize:"16px",fontWeight:600,color:`${value === 4 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}}/>
-          <Tab label="Completed" {...a11yProps(5)} style={{fontSize:"16px",fontWeight:600,color:`${value === 5 ? "#EE731B" : "#555555"}`,marginRight:"10px",borderRadius:"10px",marginBottom:"10px"}} />
           
         </Tabs>
         </ThemeProvider>
@@ -267,90 +239,11 @@ const thTdStyle = {
 
       <CustomTabPanel value={value} index={0}>
        
-
-         <Grid container spacing={2}>
-            {
-                PendingJobData && PendingJobData.map((el,index)=>{
-                   return <Grid item xs={12} sm={6} md={6} lg={3} key={index}>
-                    <JobCard Fun={()=>handelViewOrderClick(el)} Data={el}/>
-                    </Grid>
-                })
-            }
-             
-
-              </Grid>
+      <GenralTabel column={column} rows={JobData} />
         
       </CustomTabPanel>
 
-      <CustomTabPanel value={value} index={1}>
-      <Grid container spacing={2}>
-            {
-                WorkerTravling && WorkerTravling.map((el,index)=>{
-                   return <Grid item xs={12} sm={6} md={6} lg={3} key={index}>
-                    <JobCard Fun={()=>handelViewOrderClick(el)} Data={el}/>
-                    </Grid>
-                })
-            }
-             
-
-              </Grid>
-      </CustomTabPanel>
-
-      <CustomTabPanel value={value} index={2}>
-      <Grid container spacing={2}>
-            {
-                TravelCompleted && TravelCompleted.map((el,index)=>{
-                   return <Grid item xs={12} sm={6} md={6} lg={3} key={index}>
-                    <JobCard Fun={()=>handelViewOrderClick(el)} Data={el}/>
-                    </Grid>
-                })
-            }
-             
-
-              </Grid>
-      </CustomTabPanel>
-
-      <CustomTabPanel value={value} index={3}>
-      <Grid container spacing={2}>
-            {
-                InProgressJobData && InProgressJobData.map((el,index)=>{
-                   return <Grid item xs={12} sm={6} md={6} lg={3} key={index}>
-                    <JobCard Fun={()=>handelViewOrderClick(el)} Data={el}/>
-                    </Grid>
-                })
-            }
-             
-
-              </Grid>
-      </CustomTabPanel>
-
-      <CustomTabPanel value={value} index={4}>
-      <Grid container spacing={2}>
-            {
-                OnHoldJobData && OnHoldJobData.map((el,index)=>{
-                   return <Grid item xs={12} sm={6} md={6} lg={3} key={index}>
-                    <JobCard Fun={()=>handelViewOrderClick(el)} Data={el}/>
-                    </Grid>
-                })
-            }
-             
-
-              </Grid>
-      </CustomTabPanel>
-
-      <CustomTabPanel value={value} index={5}>
-      <Grid container spacing={2}>
-            {
-                CompletedJobData && CompletedJobData.map((el,index)=>{
-                   return <Grid item xs={12} sm={6} md={6} lg={3} key={index}>
-                    <JobCard Fun={()=>handelViewOrderClick(el)} Data={el}/>
-                    </Grid>
-                })
-            }
-             
-
-              </Grid>
-      </CustomTabPanel>
+    
 
      
 
