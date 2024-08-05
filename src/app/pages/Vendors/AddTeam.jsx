@@ -63,7 +63,19 @@ import {
   
     const handleInputChange = (e) => {
       const { name, value } = e.target;
-      setFormData({ ...Formdata, [name]: value });
+      
+      if (name === 'pin' &&  value.length < 4) {
+       
+        setFormData({
+          ...Formdata,
+          [name]: value,
+        });
+       
+      }
+      else{
+        setFormData({ ...Formdata, [name]: value });
+      }
+    
     };
     const handleFileChange1 = (e) => {
       setPanImageFile1(e.target.files[0]);
@@ -364,14 +376,21 @@ import {
                   </Grid>
   
                   <Grid item xs={4}>
-                    <TextField
-                      label="PIN"
-                      name="pin"
-                      value={Formdata.pin}
-                      onChange={handleInputChange}
-                      fullWidth
-                      required
-                    />
+                  <FormControl fullWidth>
+        
+        <input
+              
+              placeholder="  App Pin"
+              name="pin"
+              value={Formdata.pin}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              maxLength={4}
+              style={{height:"48px",border:"1px solid #c4c4c4"}}
+            />
+      </FormControl>
+                   
                   </Grid>
                   <Grid item xs={4}>
                     <TextField

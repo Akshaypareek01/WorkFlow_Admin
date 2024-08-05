@@ -186,18 +186,9 @@ console.log("All Parts DAta ====>",matchingIds)
       if (response.status === 200) {
         const fetchedB2BUsers = response.data;
          setTeamMemberData(fetchedB2BUsers)
-         const TechnicianData= fetchedB2BUsers.filter((el)=>{
-          return el.role === "technician"
-        })
-
-        const SparePartsData= fetchedB2BUsers.filter((el)=>{
-          return el.role === "spare parts"
-        })
-
-    
+         getOrders(fetchedB2BUsers)
+         console.log("TEam Members Data ====>",fetchedB2BUsers)
          
-        setTechnicianData(TechnicianData);
-        setSparePratsTechnicianData(SparePartsData);
 
       } else {
         console.error('Error fetching categories:', response.statusText);
@@ -223,6 +214,45 @@ console.log("All Parts DAta ====>",matchingIds)
       console.error('Error:', error.message);
     }
   }
+
+  const getOrders = async (TeamData) => {
+    try {
+      const response = await axios.get(`${Base_url}api/job`);
+      console.log(response.data);
+      const Jobs = response.data
+
+       console.log("Active Jobs Data =====>",Jobs)
+       const formatTeamMemberAvailability = (teamMembers, activeJobs) => {
+        return teamMembers.map(member => {
+          const isAssigned = activeJobs.some(job => 
+            (job.assignedWorker._id === member._id || job.assignedSparePartWorker._id === member._id ) && job.status !== 'completed'
+          );
+          return {
+            ...member,
+            availability: isAssigned ? 'unavailable' : 'available'
+          };
+        });
+      };
+      
+      const formattedTeamMembers = formatTeamMemberAvailability(TeamData, Jobs);
+      console.log("Data of avilabel worker   ==> ",formattedTeamMembers)
+      const TechnicianData= formattedTeamMembers.filter((el)=>{
+        return el.role === "technician"
+      })
+        
+      const SparePartsData= formattedTeamMembers.filter((el)=>{
+        return el.role === "spare parts"
+      })
+
+  
+       
+      setTechnicianData(TechnicianData);
+      setSparePratsTechnicianData(SparePartsData);
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    }
+  };
 
   const handelBack = ()=>{
     window.history.back();
@@ -265,6 +295,7 @@ console.log("All Parts DAta ====>",matchingIds)
     fetchClients()
     fetchTeamMember()
     getAllParts()
+    
   },[update])
   return (
     <div>
@@ -374,7 +405,7 @@ console.log("All Parts DAta ====>",matchingIds)
         >
           {TechnicianData.map((el) => (
             <MenuItem key={el._id} value={el._id}>
-              {el.name} 
+              {el.name} {el.availability === "available" ? <span style={{fontSize:"12px",color:"green",marginLeft:"20px"}}> ({el.availability.toUpperCase()})</span>:<span style={{fontSize:"12px",color:"crimson",marginLeft:"20px"}}> ({el.availability.toUpperCase()})</span>}
             </MenuItem>
           ))}
         </Select>
@@ -393,7 +424,7 @@ console.log("All Parts DAta ====>",matchingIds)
         >
           {SparePartsData.map((el) => (
             <MenuItem key={el._id} value={el._id}>
-              {el.name} 
+              {el.name} {el.availability === "available" ? <span style={{fontSize:"12px",color:"green",marginLeft:"20px"}}> ({el.availability.toUpperCase()})</span>:<span style={{fontSize:"12px",color:"crimson",marginLeft:"20px"}}> ({el.availability.toUpperCase()})</span>}
             </MenuItem>
           ))}
         </Select>

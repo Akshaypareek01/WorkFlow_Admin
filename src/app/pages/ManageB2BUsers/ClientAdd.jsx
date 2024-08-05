@@ -311,7 +311,7 @@ export const ClientAdd = () => {
         setTeacherLoading(false);
         console.log("Teacher created successfully:", response.data);
       
-        alert("Trainer Account created successfully");
+        alert("Client Added successfully");
         handelGoBack();
       })
       .catch((error) => {

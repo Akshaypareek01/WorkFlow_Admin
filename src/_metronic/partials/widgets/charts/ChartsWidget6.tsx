@@ -186,7 +186,7 @@ function getChartOptions(height: number): ApexOptions {
       },
       y: {
         formatter: function (val) {
-          return '₹' + val + ' thousands'
+          return '$' + val + ' thousands'
         },
       },
     },
