@@ -247,11 +247,11 @@ indicatorColor="primary"
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={1}>
-        Item Two
+      No data found
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={2}>
-        Item Three
+        No data found
       </CustomTabPanel>
 
 
