@@ -23,24 +23,6 @@ const SidebarMenuMain = () => {
         fontIcon="bi-app-indicator"
       />
 
-      <SidebarMenuItem
-        to="/team"
-        icon={<PeopleIcon style={{ color: "orange", fontSize: "25px" }} />}
-        title="Team"
-        fontIcon="bi-layers"
-      />
-
-<SidebarMenuItem
-        to="/client"
-        icon={
-          <WorkIcon style={{ color: "orange", fontSize: "25px" }} />
-        }
-        title="Client"
-        fontIcon="bi-layers"
-      />
-
-   
-
 <SidebarMenuItem
         to="/jobs"
         icon={
@@ -49,6 +31,26 @@ const SidebarMenuMain = () => {
         title="Jobs"
         fontIcon="bi-layers"
       />
+<SidebarMenuItem
+        to="/client"
+        icon={
+          <WorkIcon style={{ color: "orange", fontSize: "25px" }} />
+        }
+        title="Client"
+        fontIcon="bi-layers"
+      />
+      <SidebarMenuItem
+        to="/team"
+        icon={<PeopleIcon style={{ color: "orange", fontSize: "25px" }} />}
+        title="Team"
+        fontIcon="bi-layers"
+      />
+
+
+
+   
+
+
 
       <SidebarMenuItem
         to="/inventory"
