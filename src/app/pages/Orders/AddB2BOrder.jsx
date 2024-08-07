@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Grid';
-import { Box, Card, CardContent, FormControl, InputLabel, Typography } from '@mui/material';
+import { Box, Card, CardContent, FormControl, InputLabel, Typography,Autocomplete } from '@mui/material';
 import { Base_url } from '../../Config/BaseUrl';
 import axios from 'axios';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -13,8 +13,11 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import ListItemText from '@mui/material/ListItemText';
 import { DatePicker, LocalizationProvider,TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
+import AddIcon from '@mui/icons-material/Add';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import "./AddJobs.css"
+import { alignProperty } from '@mui/material/styles/cssUtils';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -74,6 +77,7 @@ export const AddB2BOrder = () => {
   const [ClientData,setClientData] = useState([])
   const [PartsData, setPartsData] = React.useState([]);
   const [AllSparePartsData, setAllSparePartsData] = useState([])
+  const [selectedClient, setSelectedClient] = useState(null);
   const handlePartsChange = (event) => {
     const {
       target: { value },
@@ -89,7 +93,10 @@ export const AddB2BOrder = () => {
       ...formData,
       [name]: value,
     });
-
+   if(name === "client"){
+    const client = ClientData.find(client => client._id === value);
+    setSelectedClient(client || null);
+   }
   };
 
   const handleCategoryChange = (index, value) => {
@@ -165,14 +172,16 @@ console.log("All Parts DAta ====>",matchingIds)
 
     console.log("Data ==>",formData)
     createJob(Data);
-    setFormData(initalData)
-    setPartsData([])
-    handelBack();
+    
+    
   };
 
   const createJob = async (data) => {
     try {
       const response = await axios.post(`${Base_url}api/job`,data );
+      setFormData(initalData)
+    setPartsData([])
+      handelBack();
       return response.data;
     } catch (error) {
       throw error.response.data;
@@ -288,6 +297,21 @@ console.log("All Parts DAta ====>",matchingIds)
       ...formData,
       stopTime: time
     });
+  };
+  
+  const handelNewClientAdd = ()=>{
+    window.open("/client_add", "_blank");
+  }
+  const handelEditClient = (id)=>{
+    window.open(`/client_view/${id}`, "_blank");
+  }
+
+  const handelClientRefresh = ()=>{
+    fetchClients()
+  }
+  const openGoogleMaps = (lat, lng) => {
+    const url = `https://www.google.com/maps?q=${lat},${lng}`;
+    window.open(url, '_blank');
   };
 
 
@@ -459,98 +483,165 @@ console.log("All Parts DAta ====>",matchingIds)
       </Grid> */}
 
       <Grid item xs={12} >
-         <Typography>Client Details</Typography>
+        <Box style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}> 
+        <Typography>Client Details</Typography>
+         
+         <Box>
+         <Button variant='outlined'  color='success' onClick={handelNewClientAdd}><AddIcon /></Button>
+         <Button variant='outlined' style={{marginLeft:"10px"}}  color='error' onClick={handelClientRefresh}><RefreshIcon /></Button>
+         </Box> 
+         
+        </Box>
+         
       </Grid>
 
       <Grid item xs={12} sm={12}>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Select Client</InputLabel>
-        <Select
-          fullWidth
-          label="From"
-          name="client"
-          value={formData.client}
-          onChange={handleInputChange}
-        >
-          {ClientData.map((el) => (
-            <MenuItem key={el._id} value={el._id}>
-              {el.name} 
-            </MenuItem>
-          ))}
-        </Select>
-        </FormControl>
+        <Autocomplete
+        
+          options={ClientData}
+          getOptionLabel={(option) => option.name}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Select Client"
+              variant="outlined"
+            />
+          )}
+          value={ClientData.find(client => client._id === formData.client) || null}
+          onChange={(event, newValue) => {
+            handleInputChange({
+              target: {
+                name: 'client',
+                value: newValue ? newValue._id : ''
+              }
+            });
+          }}
+        />
+      </FormControl>
       </Grid>
 
-      {/* <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Name"
-          name="name"
-          value={formData.name}
-          onChange={handleInputChange}
-        />
-      </Grid>
+      {selectedClient && (
+       
+          <Card>
+            <CardContent>
+              <Box style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <Typography variant="h6">Client Details</Typography>
+
+              <Button variant='outlined'  color='success' onClick={()=>handelEditClient(selectedClient._id)}><ModeEditIcon /></Button>
+              </Box>
+             
+              <Grid container spacing={2} sx={{marginTop:"20px"}}>
+              <Grid item xs={12} sm={6}>
+              <Typography  variant="body1"><strong>Name:</strong> {selectedClient.name}</Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+              <Typography variant="body2"><strong>Email:</strong> {selectedClient.email}</Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+              <Typography variant="body2"><strong>Mobile:</strong> {selectedClient.mobile}</Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+              <Typography variant="body2"><strong>Address:</strong> {selectedClient.address}</Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+              <Typography variant="body2"><strong>Alternate Name:</strong> {selectedClient.alter_name}</Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+              <Typography variant="body2"><strong>Alternate Mobile:</strong> {selectedClient.alter_mobile}</Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+              <Typography variant="body2"><strong>Alternate Email:</strong> {selectedClient.alter_email}</Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+              <Typography variant="body2"><strong>City:</strong> {selectedClient.city}</Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+              <Typography variant="body2"><strong>Pincode:</strong> {selectedClient.pincode}</Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+              <Typography variant="body2"><strong>Country:</strong> {selectedClient.country}</Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+              <Typography variant="body2"><strong>Status:</strong> {selectedClient.status}</Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+              <Typography variant="body2"><strong>Type:</strong> {selectedClient.type}</Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+              <Typography variant="body2"><strong>Status:</strong> {selectedClient.status}</Typography>
+              </Grid>
+
+              
+              
+              
+
+              {selectedClient.type !== 'Individual' && (
+                <>
+                <Grid item xs={12} sm={12}>
+                <Typography variant="h6">Business Details</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                <Typography variant="body2"><strong>Business Name:</strong> {selectedClient.business_Name}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                <Typography variant="body2"><strong>Business Email:</strong> {selectedClient.business_Email}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                <Typography variant="body2"><strong>Business Phone:</strong> {selectedClient.business_Phone}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                <Typography variant="body2"><strong>Business Website:</strong> {selectedClient.business_Website}</Typography>
+                </Grid>
+             
+                
+             
+                  
+                  
+                  
+                 
+                </>
+              )}
+
+{
+                  selectedClient.lat !== "" && selectedClient.lng !== "" && <Grid item xs={12} sm={12}>
+                  <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => openGoogleMaps(selectedClient.lat, selectedClient.lng)}
+                >
+                Google Maps
+                </Button>
+               
+                  </Grid>
+                }
+              
+              
+              </Grid>
+              
+             
+              
+            
+              {/* Add more fields as necessary */}
+            </CardContent>
+          </Card>
+       
+      )}
 
 
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Email"
-          name="email"
-          value={formData.email}
-          onChange={handleInputChange}
-        />
-      </Grid>
-
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Mobile Number"
-          name="mobileNumber"
-          value={formData.mobileNumber}
-          onChange={handleInputChange}
-        />
-      </Grid>
-
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Address"
-          name="address"
-          value={formData.address}
-          onChange={handleInputChange}
-        />
-      </Grid>
-
-      <Grid item xs={12} sm={4}>
-        <TextField
-          fullWidth
-          label="Pin Code"
-          name="pincode"
-          value={formData.pincode}
-          onChange={handleInputChange}
-        />
-      </Grid>
-
-      <Grid item xs={12} sm={4}>
-        <TextField
-          fullWidth
-          label="City"
-          name="city"
-          value={formData.city}
-          onChange={handleInputChange}
-        />
-      </Grid>
-
-      <Grid item xs={12} sm={4}>
-        <TextField
-          fullWidth
-          label="Country"
-          name="country"
-          value={formData.country}
-          onChange={handleInputChange}
-        />
-      </Grid> */}
+  
    
       <Grid item xs={12} sx={{textAlign:"right"}}>
         <Button variant="contained" sx={{bgcolor:"orange"}} size='large' onClick={handleSubmit}>

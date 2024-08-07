@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Tab,InputAdornment, Tabs, Typography, TextField } from '@mui/material'
+import { Box, Button, Card, CardContent, Tab,InputAdornment, Tabs, Typography, TextField,FormControl,InputLabel,MenuItem,Select } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add';
 import PropTypes from 'prop-types';
@@ -102,11 +102,13 @@ const thTdStyle = {
 };
   const [value, setValue] = useState(0);
   const [searchInput, setSearchInput] = useState('');
-  
+  const [Jobs,setJobs] = useState([])
   const [open, setOpen] = useState(false);
+
   const [JobData,setJobData] = useState([]);
   const [update,setupdate] = useState(0)
-
+  const [filteredJobData, setFilteredJobData] = useState([]);
+  const [statusFilter, setStatusFilter] = useState('All');
   const handleClose = () => {
     setOpen(false);
     setSelectedOrderData(null)
@@ -140,7 +142,7 @@ const thTdStyle = {
       console.log(response.data);
       const Jobs = response.data
 
-      
+      setJobs(Jobs)
 
       const FormatedData = Jobs.map((el,index)=>({
         "Name":el.jobName,
@@ -160,7 +162,7 @@ const thTdStyle = {
       }))
 
       setJobData(FormatedData)
-          
+      setFilteredJobData(FormatedData);
       return response.data;
     } catch (error) {
       throw error.response.data;
@@ -169,8 +171,55 @@ const thTdStyle = {
  
 
   const handelOrderClick = ()=>{
-    navigate("add")
+    // navigate("add")
+    window.open("/jobs/add", "_blank");
   }
+
+  
+
+ useEffect(() => {
+    const filterData = () => {
+      const filtered = Jobs.filter(job => {
+        const matchesSearch = 
+          job.jobName.toLowerCase().includes(searchInput.toLowerCase()) ||
+          (job.client && job.client.name.toLowerCase().includes(searchInput.toLowerCase())) ||
+          (job.assignedWorker && job.assignedWorker.name.toLowerCase().includes(searchInput.toLowerCase())) ||
+          (job.assignedSparePartWorker && job.assignedSparePartWorker.name.toLowerCase().includes(searchInput.toLowerCase()));
+        
+        const matchesStatus = 
+          statusFilter === 'All' ||
+          job.status.toLowerCase() === statusFilter.toLowerCase();
+        
+        return matchesSearch && matchesStatus;
+      }).map((el, index) => ({
+        "Name": el.jobName,
+        "jobDate": el.jobDate,
+        "startTime": el.startTime,
+        "stopTime": el.stopTime,
+        "partsRequired": el.partsRequired && el.partsRequired.map(part => part.partName).join(", "),
+        "client": el.client && el.client.name,
+        "assignedWorker": el.assignedWorker && el.assignedWorker.name,
+        "assignedSparePartWorker": el.assignedSparePartWorker && el.assignedSparePartWorker.name,
+        "status": <Button variant='contained' color='success'>{el.status}</Button>,
+        "CreatedAt": el.createdAt,
+        "Action": <EditIcon onClick={() => handelViewClick(el._id)} style={{ color: `${ThemColor.icon}` }} />,
+        "Delete": <DeleteIcon color="error" onClick={() => deleteUser(el._id)} />
+      }));
+
+      setFilteredJobData(filtered);
+    };
+
+    // if(searchInput !== ""){
+    //   filterData();
+    //   return;
+    // }
+    filterData();
+  //  if(searchInput === ""){
+  //   setFilteredJobData(JobData);
+  //   return;
+  //  }
+  }, [searchInput, statusFilter]);
+ 
 
 
   useEffect(()=>{
@@ -227,6 +276,22 @@ const thTdStyle = {
               onChange={(e) => setSearchInput(e.target.value)}
         />
 
+<FormControl sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="status-filter-label">Status</InputLabel>
+        <Select
+          labelId="status-filter-label"
+          id="status-filter"
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          label="Status"
+        >
+          <MenuItem value="All">All</MenuItem>
+          <MenuItem value="Completed">Completed</MenuItem>
+          <MenuItem value="Pending">Pending</MenuItem>
+          <MenuItem value="In Progress">In Progress</MenuItem>
+        </Select>
+      </FormControl>
+
 <Button variant="contained" style={{marginLeft:"20px",background:"black",height:"33px"}} startIcon={<FilterListIcon />} >A-Z</Button>
             </Box>
           </Box>
@@ -239,7 +304,7 @@ const thTdStyle = {
 
       <CustomTabPanel value={value} index={0}>
        
-      <GenralTabel column={column} rows={JobData} />
+      <GenralTabel column={column} rows={filteredJobData} />
         
       </CustomTabPanel>
 
